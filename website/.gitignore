@@ -1,1 +1,19 @@
-1
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production & Framework Build Folders
+dist/
+build/
+.next/
+out/
+.vercel/
+
+# Cache & Temp Files
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# Local Environment Overrides
+.env*.local
