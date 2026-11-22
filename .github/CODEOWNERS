@@ -1,0 +1,19 @@
+# Default owner for root files, .gitignore, and shared configs (You)
+* @Casterk017 @HamsterSaMe
+
+# Person 1: Admin Website (owns Website root + AdminDashboard)
+/Website/src/AdminDashboard @JoeyHi @HamsterSaMe
+
+# Person 2: Mobile User Dashboard
+/Android/lib/UserDashboard/ @KaiSheng1030 @HamsterSaMe
+
+# Person 3: Mobile Map Module
+/Android/lib/Map/ @HamsterSaMe
+
+# Person 4: Reporting Module (Mobile + Web)
+/Android/lib/Report/ @wongenxi @HamsterSaMe
+/Website/src/Report/ @wongenxi @HamsterSaMe
+
+# Person 5 (You): Database Services & Shared Models
+/Android/lib/Database/ @Casterk017 @HamsterSaMe
+/Website/src/Database/ @Casterk017 @HamsterSaMe
