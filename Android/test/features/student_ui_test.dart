@@ -6,19 +6,19 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_development_assignment_group_12/app/app_theme.dart';
-import 'package:mobile_app_development_assignment_group_12/app/locale_controller.dart';
-import 'package:mobile_app_development_assignment_group_12/app/student_preferences.dart';
-import 'package:mobile_app_development_assignment_group_12/features/community_chat/view_models/community_chat_view_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/community_chat/models/chat_message_ui_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/community_chat/views/community_chat_page.dart';
-import 'package:mobile_app_development_assignment_group_12/features/dashboard/views/dashboard_page.dart';
-import 'package:mobile_app_development_assignment_group_12/features/language_settings/views/settings_page.dart';
-import 'package:mobile_app_development_assignment_group_12/features/leaderboard/view_models/leaderboard_view_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/leaderboard/views/leaderboard_page.dart';
-import 'package:mobile_app_development_assignment_group_12/features/my_reports/view_models/my_reports_view_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/my_reports/views/my_reports_page.dart';
-import 'package:mobile_app_development_assignment_group_12/main.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/app_theme.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/locale_controller.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/student_preferences.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/community_chat/view_models/community_chat_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/community_chat/models/chat_message_ui_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/community_chat/views/community_chat_page.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/dashboard/views/dashboard_page.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/language_settings/views/settings_page.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/leaderboard/view_models/leaderboard_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/leaderboard/views/leaderboard_page.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/my_reports/view_models/my_reports_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/my_reports/views/my_reports_page.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/UserDashboard.dart';
 
 Future<void> pumpStudentApp(
   WidgetTester tester, {

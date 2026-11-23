@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_development_assignment_group_12/app/theme_controller.dart';
-import 'package:mobile_app_development_assignment_group_12/app/student_preferences.dart';
-import 'package:mobile_app_development_assignment_group_12/app/locale_controller.dart';
-import 'package:mobile_app_development_assignment_group_12/features/community_chat/view_models/community_chat_view_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/leaderboard/mock/mock_rankings.dart';
-import 'package:mobile_app_development_assignment_group_12/features/leaderboard/models/leaderboard_entry_ui_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/leaderboard/view_models/leaderboard_view_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/my_reports/mock/mock_reports.dart';
-import 'package:mobile_app_development_assignment_group_12/features/my_reports/models/report_ui_model.dart';
-import 'package:mobile_app_development_assignment_group_12/features/my_reports/view_models/my_reports_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/theme_controller.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/student_preferences.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/app/locale_controller.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/community_chat/view_models/community_chat_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/leaderboard/mock/mock_rankings.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/leaderboard/models/leaderboard_entry_ui_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/leaderboard/view_models/leaderboard_view_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/my_reports/mock/mock_reports.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/my_reports/models/report_ui_model.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/features/my_reports/view_models/my_reports_view_model.dart';
 
 void main() {
   test(
