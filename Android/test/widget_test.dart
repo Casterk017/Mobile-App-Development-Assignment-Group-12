@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_development_assignment_group_12/main.dart';
+import 'package:mobile_app_development_assignment_group_12/UserDashboard/UserDashboard.dart';
 
 void main() {
   testWidgets('CampusSafe student prototype starts', (tester) async {

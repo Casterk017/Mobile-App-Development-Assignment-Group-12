@@ -1,3 +1,6 @@
+// Keep the team's established module entry filename.
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 void main() {
