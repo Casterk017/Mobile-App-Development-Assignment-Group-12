@@ -38,11 +38,33 @@ class CampusMapFrame extends StatelessWidget {
           ),
           const Divider(height: 1),
           Expanded(
-            child:
-                map ??
-                (mapBuilder != null
-                    ? Builder(builder: mapBuilder!)
-                    : Container(
+            child: GestureDetector(
+              onTap: () {
+                // Call the static entry method from your map feature
+                // We use dynamic navigation so we don't need a hard import here.
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      // Retrieve the full Map screen if it was injected
+                      if (map != null) return map!;
+                      if (mapBuilder != null) return Builder(builder: mapBuilder!);
+                      return const Scaffold(body: Center(child: Text("Map Feature Not Found")));
+                    }
+                  ),
+                );
+              },
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // MAP PREVIEW (Read-only, non-interactive visual representation)
+                  if (map != null || mapBuilder != null)
+                    AbsorbPointer(
+                      child: map ?? Builder(builder: mapBuilder!),
+                    ),
+                  
+                  // THE PLACEHOLDER OVERLAY (If map isn't provided or we want the UI overlay)
+                  if (map == null && mapBuilder == null)
+                    Container(
                         key: const ValueKey('campus-map-placeholder'),
                         color: Theme.of(context).colorScheme.primaryContainer,
                         alignment: Alignment.center,
@@ -84,7 +106,10 @@ class CampusMapFrame extends StatelessWidget {
                             ),
                           ),
                         ),
-                      )),
+                      )
+                ],
+              ),
+            ),
           ),
         ],
       ),

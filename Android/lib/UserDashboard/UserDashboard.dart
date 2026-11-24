@@ -1,3 +1,6 @@
+// Keep the team's established module entry filename.
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +17,7 @@ import 'features/leaderboard/mock/mock_rankings.dart';
 import 'features/leaderboard/view_models/leaderboard_view_model.dart';
 import 'features/my_reports/mock/mock_reports.dart';
 import 'features/my_reports/view_models/my_reports_view_model.dart';
-import 'Map/features/campus_map/campus_map_entry.dart'; // YOUR MAP FEATURE
+import '../Map/features/campus_map/presentation/campus_map_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,35 +122,15 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      // We wrap StudentShell to easily float a testing button for your Map!
-      home: Stack(
-        children: [
-          StudentShell(
-            username: _displayName,
-            onNameChanged: _saveName,
-            localeController: _locale,
-            themeController: _appearance,
-            reportsViewModel: _reports,
-            chatViewModel: _chat,
-            leaderboardViewModel: _leaderboard,
-          ),
-          Positioned(
-            bottom: 80,
-            right: 20,
-            child: Material(
-              color: Colors.transparent,
-              child: FloatingActionButton.extended(
-                heroTag: "test_map_btn",
-                onPressed: () {
-                  // Calling the exact entry function you require!
-                  CampusMapEntry.openMap(context);
-                },
-                icon: const Icon(Icons.map),
-                label: const Text('Test Campus Map'),
-              ),
-            ),
-          )
-        ],
+      home: StudentShell(
+        username: _displayName,
+        onNameChanged: _saveName,
+        localeController: _locale,
+        themeController: _appearance,
+        reportsViewModel: _reports,
+        chatViewModel: _chat,
+        leaderboardViewModel: _leaderboard,
+        map: const CampusMapScreen(), // INJECT YOUR MAP COMPONENT HERE
       ),
     ),
   );
