@@ -30,8 +30,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   cupertino_icons: ^1.0.8
+  shared_preferences: ^2.5.6
 
   # Google Maps & Geolocation
   google_maps_flutter: ^2.5.3
@@ -61,6 +64,17 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/fonts/libre_franklin/OFL.txt
+  fonts:
+    - family: LibreFranklin
+      fonts:
+        - asset: assets/fonts/libre_franklin/LibreFranklin-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/libre_franklin/LibreFranklin-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/libre_franklin/LibreFranklin-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:
