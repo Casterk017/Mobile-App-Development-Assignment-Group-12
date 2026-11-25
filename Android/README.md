@@ -4,6 +4,18 @@ A new Flutter project.
 
 ## Getting Started
 
+Open this `Android` directory as the Flutter project. It contains `pubspec.yaml`.
+The dashboard entry point is `lib/UserDashboard/UserDashboard.dart`.
+Run the following commands from this directory with an emulator running:
+
+```sh
+flutter pub get
+flutter run -t lib/UserDashboard/UserDashboard.dart
+```
+
+In Android Studio, set the run configuration's Dart entrypoint to
+`lib/UserDashboard/UserDashboard.dart`.
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
