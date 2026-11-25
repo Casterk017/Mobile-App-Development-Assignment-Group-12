@@ -17,6 +17,7 @@ import 'features/leaderboard/mock/mock_rankings.dart';
 import 'features/leaderboard/view_models/leaderboard_view_model.dart';
 import 'features/my_reports/mock/mock_reports.dart';
 import 'features/my_reports/view_models/my_reports_view_model.dart';
+import '../Map/features/campus_map/presentation/campus_map_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,6 +130,7 @@ class _MyAppState extends State<MyApp> {
         reportsViewModel: _reports,
         chatViewModel: _chat,
         leaderboardViewModel: _leaderboard,
+        map: const CampusMapScreen(), // INJECT YOUR MAP COMPONENT HERE
       ),
     ),
   );
