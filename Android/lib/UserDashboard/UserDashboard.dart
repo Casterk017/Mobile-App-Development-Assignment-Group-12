@@ -1,122 +1,135 @@
+// Keep the team's established module entry filename.
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'app/app_theme.dart';
+import 'app/locale_controller.dart';
+import 'app/student_shell.dart';
+import 'app/theme_controller.dart';
+import 'app/student_preferences.dart';
+import 'features/community_chat/mock/mock_messages.dart';
+import 'features/community_chat/view_models/community_chat_view_model.dart';
+import 'features/leaderboard/mock/mock_rankings.dart';
+import 'features/leaderboard/view_models/leaderboard_view_model.dart';
+import 'features/my_reports/mock/mock_reports.dart';
+import 'features/my_reports/view_models/my_reports_view_model.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks([
+      'Libre Franklin',
+    ], await rootBundle.loadString('assets/fonts/libre_franklin/OFL.txt'));
+  });
+  StudentPreferences? preferences;
+  var initial = const StudentPreferenceSnapshot();
+  try {
+    preferences = StudentPreferences.device(studentId: demoStudentId);
+    initial = await preferences.load();
+  } catch (_) {
+    // Preference storage is optional; failure must not prevent app startup.
+    debugPrint('CampusSafe preferences could not be restored.');
+  }
+  runApp(MyApp(preferences: preferences, initialPreferences: initial));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+/// Prototype composition only. The team's authenticated app can instead host
+/// StudentShell with real display data, ViewModels, and integration callbacks.
+class MyApp extends StatefulWidget {
+  const MyApp({
+    super.key,
+    this.preferences,
+    this.initialPreferences = const StudentPreferenceSnapshot(),
+  });
+  final StudentPreferences? preferences;
+  final StudentPreferenceSnapshot initialPreferences;
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final LocaleController _locale;
+  late final ThemeController _appearance;
+  late String _displayName;
+  @override
+  void initState() {
+    super.initState();
+    _displayName =
+        widget.initialPreferences.displayName ?? 'Edmund Chai En Yun';
+    _locale = LocaleController(
+      initialLocale: widget.initialPreferences.locale,
+      savePreference: widget.preferences?.saveLocale,
+    );
+    _appearance = ThemeController(
+      initialMode: widget.initialPreferences.themeMode,
+      savePreference: widget.preferences?.saveTheme,
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  Future<void> _saveName(String name) async {
+    await widget.preferences?.saveName(name);
+    if (mounted) setState(() => _displayName = name);
+  }
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  final _reports = MyReportsViewModel(
+    currentStudentId: demoStudentId,
+    reports: mockReports(),
+  );
+  final _chat = CommunityChatViewModel(
+    currentStudentId: demoStudentId,
+    currentAlias: 'You',
+    messages: mockMessages(),
+  );
+  final _leaderboard = LeaderboardViewModel(
+    currentStudentId: demoStudentId,
+    rankings: mockRankings(),
+    month: DateTime(2026, 11),
+  );
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void dispose() {
+    _locale.dispose();
+    _appearance.dispose();
+    _reports.dispose();
+    _chat.dispose();
+    _leaderboard.dispose();
+    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: Listenable.merge([_locale, _appearance]),
+    builder: (context, _) => MaterialApp(
+      title: 'CampusSafe',
+      debugShowCheckedModeBanner: false,
+      theme: campusTheme(),
+      darkTheme: campusTheme(brightness: Brightness.dark),
+      themeMode: _appearance.mode,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        overscroll: false,
+        physics: const ClampingScrollPhysics(),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      locale: _locale.locale,
+      supportedLocales: LocaleController.supportedLocales,
+      localizationsDelegates: const [
+        CampusStrings.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: StudentShell(
+        username: _displayName,
+        onNameChanged: _saveName,
+        localeController: _locale,
+        themeController: _appearance,
+        reportsViewModel: _reports,
+        chatViewModel: _chat,
+        leaderboardViewModel: _leaderboard,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+    ),
+  );
 }
