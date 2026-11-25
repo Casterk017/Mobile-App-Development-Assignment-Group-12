@@ -67,3 +67,18 @@ button.primary {
   font-weight: 700;
   cursor: pointer;
 }
+
+.shell { display: flex; min-height: 100vh; }
+.sidebar { width: 230px; background: var(--surface); border-right: 1px solid var(--outline); padding: 24px 16px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 6px; margin-top: 24px; }
+.sidebar a { padding: 10px 14px; border-radius: var(--input-radius); color: var(--muted); text-decoration: none; font-weight: 500; }
+.sidebar a.active { background: var(--mint-soft); color: var(--ink); font-weight: 700; }
+.main { flex: 1; display: flex; flex-direction: column; }
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; border-bottom: 1px solid var(--outline); background: var(--surface); }
+.content { padding: 32px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
+.label { color: var(--muted); margin: 0 0 4px; font-size: 14px; }
+.login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.login-card { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
+.error { color: #B3261E; margin: 0; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
