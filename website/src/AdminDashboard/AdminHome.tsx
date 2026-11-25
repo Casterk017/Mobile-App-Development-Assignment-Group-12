@@ -1,13 +1,27 @@
+import { useEffect, useState } from 'react'
 import { useAuth } from './auth'
-import { reports } from './mockData'
+import { getReportsForRole } from './adminService'
+import type { Report } from './mockData'
 
 export default function AdminHome() {
   const { user } = useAuth()
+  const [mine, setMine] = useState<Report[] | null>(null)
+  const adminRole = user?.adminRole ?? ''
+
+  useEffect(() => {
+    let cancelled = false
+    getReportsForRole(adminRole).then((list) => {
+      if (!cancelled) setMine(list)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [adminRole])
+
   if (!user) return null
 
-  const mine = reports.filter((r) => r.assignedTo === user.adminRole)
-  const waiting = mine.filter((r) => r.status === 'waiting').length
-  const resolved = mine.filter((r) => r.status === 'resolved').length
+  const waiting = mine ? mine.filter((r) => r.status === 'waiting').length : '...'
+  const resolved = mine ? mine.filter((r) => r.status === 'resolved').length : '...'
 
   return (
     <>
