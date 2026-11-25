@@ -1,0 +1,69 @@
+:root {
+  /* from mobile CampusColors */
+  --mint: #BFEBDD;
+  --mint-soft: #DFF5EC;
+  --background: #F0FAF6;
+  --primary: #246B57;
+  --ink: #1C3D33;
+  --muted: #5A756B;
+  --outline: #CCE6DC;
+  --surface: #FFFFFF;
+
+  --on-primary: #FFFFFF;
+  --card-radius: 22px;
+  --input-radius: 16px;
+  --font: 'Libre Franklin', system-ui, sans-serif;
+}
+
+/* dark mode, same as the mobile dark theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #10221B;
+    --surface: #182C26;
+    --primary: #9FDBC5;
+    --on-primary: #10221B;
+    --mint-soft: #284D40;
+    --ink: #E3F2EB;
+    --muted: #B1C9BD;
+    --outline: #3A5649;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--background);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+h1 { font-size: 30px; font-weight: 700; line-height: 1.2; }
+h2 { font-size: 24px; font-weight: 700; line-height: 1.25; }
+h3 { font-size: 21px; font-weight: 700; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--card-radius);
+  padding: 20px;
+}
+
+input {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--input-radius);
+  padding: 16px;
+  font-family: var(--font);
+  color: var(--ink);
+}
+
+button.primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: var(--input-radius);
+  padding: 12px 20px;
+  font-family: var(--font);
+  font-weight: 700;
+  cursor: pointer;
+}
