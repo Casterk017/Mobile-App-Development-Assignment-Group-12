@@ -43,6 +43,10 @@ dependencies:
   sqflite: ^2.3.0
   path: ^1.8.3
 
+  # Supabase Cloud Database & Environment Configuration
+  supabase_flutter: ^2.8.4
+  flutter_dotenv: ^5.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
