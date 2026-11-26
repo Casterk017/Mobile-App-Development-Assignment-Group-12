@@ -1,0 +1,21 @@
+# Supabase CLI local state & temporary files
+.temp/
+.branches/
+.supabase/
+
+# Environment & secret files (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+functions/**/.env
+functions/**/.env.*
+
+# Edge Functions & local runtime caches
+.deno/
+node_modules/
+
+# Local database dumps & backups
+dump.sql
+*.dump
+*.sql.bak
+*.log
