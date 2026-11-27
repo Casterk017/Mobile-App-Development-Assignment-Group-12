@@ -1,4 +1,4 @@
-# Campus Safety & Incident Reporting System
+# UTS Campus Safety & Incident Reporting System
 
 **Repository:** `Mobile-App-Development-Assignment-Group-12`
 
@@ -6,33 +6,51 @@
 
 ## 1. What This Project Is About
 
-The **Campus Safety & Incident Reporting System** is a hybrid mobile and web application built for a Mobile App Development course assignment. It connects campus users on mobile devices with administrative staff on a web portal to streamline campus safety reporting, location verification, and incident resolution.
+The **UTS Campus Safety & Incident Reporting System** is a cross-platform mobile and web application built for the **University of Technology Sarawak (UTS)** campus community for a Mobile App Development course assignment. Students report on-campus safety, maintenance, cleanliness, and parking issues via a **Flutter (Android)** mobile app, while department staff and a Super Admin triage, resolve, and oversee campus operations through a **TypeScript + Vite** web admin portal backed by **Supabase** (PostgreSQL, Auth, Row-Level Security, Storage, Realtime, and Edge Functions).
 
-- **How It Works:** Mobile users log in, view their personal dashboard and contribution rankings, select preset pins on an interactive campus map (with on-demand GPS area verification), and submit incident reports. On the web portal, regular administrators review and resolve reports assigned to their specific role, while a Super Admin oversees global analytics, user/admin accounts, and all system-wide reports.
-- **Architecture Strategy:** The repository uses a **decoupled monorepo** split into two independent client folders (`Android/` and `Website/`) backed by a shared cloud database. Every team member works inside an isolated feature folder and interacts with the database strictly through standardized wrapper functions (`Database/`), preventing merge conflicts and keeping UI code completely separated from backend queries.
+- **Architecture Strategy:** The repository uses a **decoupled monorepo** split into two independent client folders (`Android/` and `Website/`) plus a shared backend folder (`supabase/`). Every team member works inside an isolated feature folder and interacts with Supabase strictly through standardized wrapper functions (`Database/`), preventing merge conflicts and keeping UI code completely separated from raw database queries.
 
 ### Tech Stack
 
-- **Mobile Application (`Android/`):** Flutter (Dart)
-- **Web Administration Portal (`Website/`):** JavaScript / TypeScript (Node.js web stack)
-- **Backend, Auth & Security (`Database/`):** Cloud database with Role-Based Access Control (`user`, `admin`, `super_admin`), environment-variable secret management (`.env`), and pre-seeded dummy data for testing.
+- **Mobile Application (`Android/`):** Flutter (Dart) with `supabase_flutter` & `flutter_dotenv`
+- **Web Administration Portal (`Website/`):** TypeScript + Vite (`@supabase/supabase-js`)
+- **Backend, Auth & Security (`supabase/` + `Database/`):** Supabase (PostgreSQL, Auth, Row-Level Security, Storage, Realtime, Edge Functions), environment-variable secret management (`.env`), and pre-seeded dummy data for testing.
+
+### System Roles & Access Model
+
+- **Student (`user`):** Self-registers on mobile; submits incident reports anchored to campus map pins, tracks report timelines, participates in community and department chats, and earns contribution points.
+- **Department Admin (`admin`):** Provisioned by the Super Admin into one of four fixed departments — **`facilities`**, **`cleaner`**, **`parking`**, or **`security`** — with scoped access to department reports, student support chats, and community moderation.
+- **Super Admin (`super_admin`):** Full system oversight across all departments, accounts, dynamic report categories, interactive map pins, campus GPS boundaries, chat moderation, and both student and admin leaderboards.
 
 ### Team Roles & Ownership
 
-- Casterk017 - Project Architecture, Database Design, Security Rules & Cross-Platform Service Wrappers
-- JoeyHi - Web Admin & Super Admin Dashboard UI
-- Kaisheng1030 - Mobile User Dashboard UI & Analytics
-- HamsterSaMe - Mobile Interactive Map, Preset Pins & GPS Location Verification
-- wongenxi - Cross-Platform Incident Reporting (Mobile Submission & Web Display)
+- `Casterk017` — Project Architecture, Supabase Backend, RLS Security Rules & Cross-Platform `Database/` Wrappers
+- `JoeyHi` — Web Admin & Super Admin Dashboard UI
+- `Kaisheng1030` — Mobile User Dashboard UI & Analytics
+- `HamsterSaMe` — Mobile Interactive Map, Preset Pins & GPS Location Verification
+- `wongenxi` — Cross-Platform Incident Reporting (Mobile Submission & Web Display)
 
 ---
 
 ## 2. What Each Folder Is For
 
 ```text
-Mobile-App-Development-Assignment/
+Mobile-App-Development-Assignment-Group-12/
 ├── .github/
 │   └── CODEOWNERS
+├── supabase/
+│   ├── migrations/
+│   │   ├── 202611250001_core_schema.sql
+│   │   ├── 202611250002_rls_and_storage.sql
+│   │   ├── 202611250003_rpcs_and_views.sql
+│   │   └── 202611250004_seed_reference_data.sql
+│   ├── functions/
+│   │   └── admin-accounts/index.ts
+│   ├── seed/
+│   │   └── seed.mjs
+│   ├── .env.example
+│   ├── .gitignore
+│   └── README.md
 ├── Android/
 │   ├── android/
 │   ├── ios/
@@ -43,6 +61,7 @@ Mobile-App-Development-Assignment/
 │   │   └── UserDashboard/
 │   ├── test/
 │   ├── web/
+│   ├── .env.example
 │   ├── .gitignore
 │   └── pubspec.yaml
 ├── Website/
@@ -50,69 +69,67 @@ Mobile-App-Development-Assignment/
 │   │   ├── AdminDashboard/
 │   │   ├── Database/
 │   │   └── Report/
-│   └── .gitignore
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   └── tsconfig.json
 ├── .gitignore
-└── README.md
+└── Readme.md
 ```
 
-### Root-Level Folders & Files
+### Root & Backend Folders
 
-- `.github/`: Holds GitHub repository governance files, specifically `CODEOWNERS`, which enforces folder-level Pull Request review rules so teammates only modify their own modules.
-- `Android/`: Contains the complete Flutter mobile application used by regular campus users.
-- `Website/`: Contains the complete web portal used by regular administrators and the Super Admin.
+- `.github/CODEOWNERS`: Enforces folder-level Pull Request review rules so teammates only modify their own modules.
+- `supabase/` (Owner: `@Casterk017`): Contains all PostgreSQL SQL migrations (schema, triggers, RLS, storage policies, RPCs, reference data), the `admin-accounts` Edge Function, and the idempotent `seed/seed.mjs` dummy-data script. See [`supabase/README.md`](supabase/README.md).
 - `.gitignore` (Root): Prevents OS junk files, IDE configs (`.vscode/`, `.idea/`), and sensitive `.env` secret files from being committed anywhere in the repository.
 
 ### Mobile App Folders (`Android/`)
 
-1. `Android/lib/UserDashboard/` (Owner: `@KaiSheng1030`): Contains the mobile user landing screens (`UserDashboard.dart`), personal analytics displays, contribution leaderboards, and the user-to-admin chat interface.
-2. `Android/lib/Map/` (Owner: `@HamsterSaMe`): Contains the interactive campus map widget, preset pin markers, on-demand GPS capture logic, and boundary-checking functions.
-3. `Android/lib/Report/` (Owner: `@wongenxi`): Contains the mobile incident report form and submission logic that sends user reports tied to preset pins to the database.
-4. `Android/lib/Database/` (Owner: `@Casterk017`): Contains the Dart database wrapper functions (GET, POST, UPDATE) and data model classes used by all mobile modules to communicate with the cloud backend.
-5. `Android/android/`, `ios/`, `web/`, `test/`: Standard Flutter platform build wrappers and testing directories.
+1. `Android/lib/UserDashboard/` (Owner: `@KaiSheng1030`): Mobile user landing screens (`UserDashboard.dart`), paginated report history, Top-20 + personal rank leaderboard, and two-mode chat interface.
+2. `Android/lib/Map/` (Owner: `@HamsterSaMe`): Interactive UTS campus map widget, preset pin markers, privacy-safe pin report summaries, and on-demand GPS capture logic.
+3. `Android/lib/Report/` (Owner: `@wongenxi`): Mobile incident report form (loading dynamic active categories) and multi-photo submission logic.
+4. `Android/lib/Database/` (Owner: `@Casterk017`): Standardized Dart Supabase wrapper services, immutable models, Realtime helpers, and typed `DatabaseException` handling. See [`Android/lib/Database/README.md`](Android/lib/Database/README.md).
 
 ### Web Portal Folders (`Website/`)
 
-- `Website/src/AdminDashboard/` (Owner: `@JoeyHi`): Contains the web interface for both regular admins and the Super Admin, including login gating, analytics panels, account management controls, and the multi-tier chat interface.
-- `Website/src/Report/` (Owner: `@wongenxi`): Contains the web report retrieval components and the Report Details view embedded inside the Admin Dashboard.
-- `Website/src/Database/` (Owner: `@Casterk017`): Contains the JavaScript/TypeScript database wrapper functions (GET, POST, UPDATE) that power data retrieval, account administration, and status updates on the website.
+1. `Website/src/AdminDashboard/` (Owner: `@JoeyHi`): Web interface for Department Admins and the Super Admin (login gating, analytics, dynamic category & pin/bounds management, account management, and multi-tier chat/moderation).
+2. `Website/src/Report/` (Owner: `@wongenxi`): Web report list (paginated), Report Details view with audit timeline & signed photo URLs, and status resolution controls.
+3. `Website/src/Database/` (Owner: `@Casterk017`): Strongly typed TypeScript Supabase wrapper services for the Vite web portal. See [`Website/src/Database/README.md`](Website/src/Database/README.md).
 
 ---
 
-## 3. Main Features of the Project
+## 3. Main Features & Architecture
 
-### A. User Dashboard (Mobile — Supports Multiple Users)
+### A. Interactive Campus Map & Dynamic Pin Management
 
-- **Authentication Gate:** Integrates the login module before loading the dashboard so only authenticated users can access their account.
-- **User Analytics & History:** Displays the total number of reports posted by the user, a list of reports submitted by that specific account, earned Community Contribution points, and the user's ranking based on their contribution points.
-- **Embedded Campus Map:** Loads and renders the interactive campus map and its functions directly onto the user dashboard interface.
-- **User-to-Admin Chat:** Provides an integrated chat module allowing users to communicate directly with a predetermined administrator.
+- **Preset Campus Pins (`preset_pins`):** Preloaded with 19 UTS campus locations (coordinates, block/section details, and public building photos stored in the `pin-images` bucket).
+- **Privacy-Safe Pin Summaries (`get_pin_report_summaries`):** Tapping a map pin displays non-sensitive incident summaries (title, reported date, solved/unsolved status) without exposing reporter identities.
+- **Super Admin Map Controls (`pinService`):** The Super Admin can add, edit, upload photos for (`uploadPinImage`), and delete obsolete campus pins (`deletePresetPin`). `reports.pin_id` uses `ON DELETE SET NULL` so historical reports remain intact via their `reports.location` text snapshot.
+- **Expandable Campus Bounds (`campus_settings`):** UTS GPS boundaries are stored in a Super Admin-editable settings table (`getCampusBounds` / `updateCampusBounds`) rather than hardcoded, allowing campus coverage to expand without SQL migrations.
 
-### B. Admin Dashboard (Web — Supports Multiple Regular Admins & 1 Super Admin)
+### B. Incident Reporting & GPS Trust Verification
 
-- **Authentication Gate:** Restricts access until an administrator or Super Admin successfully logs in via the authentication page.
-- **Regular Admin Analytics:** Displays the administrator's assigned role, the total number of reports waiting to be resolved by them, and the total number of reports resolved by them.
-- **Role-Filtered Report Section:** Displays incoming reports filtered specifically to the logged-in admin's role, paired with a Report Details button to inspect full incident information.
-- **Multi-Tier Chat Module:** Allows regular administrators to chat with both the Super Admin and mobile users.
-- **Super Admin Exclusive Capabilities:**
-  - **Global Analytics & Rankings:** Displays system-wide totals of reports waiting to be resolved, system-wide totals of reports resolved, and contribution rankings for both admins and users.
-  - **Account Management & Privacy-Preserving Recovery:** Views all user and admin accounts, deletes accounts when required, and assists with account recovery via email (facilitating password resets through email without exposing passwords or compromising user/admin privacy).
-  - **Full System Report Access:** Grants visibility into all reports across the entire platform (unlike regular admins who only view reports assigned to their role).
+- **Dynamic Category-to-Department Routing (`category_department_map`):** Report categories (`lighting`, `facilities`, `access`, `environment`, `parking`, `security`, plus any new categories added from the Super Admin Dashboard) dynamically route incoming reports to one of the 4 fixed admin departments (`facilities`, `cleaner`, `parking`, `security`) and can be toggled active/inactive without breaking historical records.
+- **On-Demand GPS Trust Badge:** Optional reporter GPS coordinates (`reporter_lat`, `reporter_lng`) are verified server-side by a database trigger against `campus_settings` bounds to stamp `is_gps_verified`, without blocking students who submit reports after leaving campus or from areas with weak indoor GPS.
+- **Private Multi-Photo Evidence (`report-attachments`):** Students can attach multiple photos per report, stored in a private bucket and served via short-lived, RBAC-gated signed URLs.
+- **Paginated Report History & Audit Timeline (`report_updates`):** Reports generate sequential tracking codes (`UTS-1001`, etc.), log status transitions (`pending`, `in_progress`, `resolved`, `rejected`) with staff notes, and load newest-first in paginated batches of the **latest 10** (`limit = 10`, `offset = 0`) returning `{ items, totalCount, hasMore }`.
 
-### C. Interactive Map & Location Verification (Mobile)
+### C. Automated Contribution Ledger & Leaderboards
 
-- **Campus Map & Preset Pins:** Displays an interactive map of the campus populated with predefined preset pins that users tap and select when submitting an incident report.
-- **On-Demand GPS Verification:** Captures the user's live GPS location on demand when a button is pressed and calculates whether the user is physically inside a specific designated area.
+- **Append-Only Points Ledger (`contribution_events`):** When a report transitions to `resolved`, an idempotent database trigger automatically awards **+20 points** to the reporting student and **+10 points** to the resolving admin (`0` points for pending or rejected reports, preventing spam farming).
+- **Top 20 + Personal Rank (`get_leaderboard` & `get_my_rank`):** Computes **Monthly** and **All-Time** rankings dynamically from timestamped ledger events (no manual monthly reset cron required), returning the **Top 20** alongside the logged-in user's exact rank even if outside the Top 20. The Super Admin also views department admin rankings.
 
-### D. Cross-Platform Incident Reporting (Mobile & Web)
+### D. Two-Mode Real-Time Chat & Tiered Moderation
 
-- **Mobile Report Submission:** Links incident details to the user's selected preset pin on the map and pushes the validated report record to the cloud database.
-- **Web Report Retrieval & Inspection:** Fetches stored reports from the database and renders summary lists and full detail modals/views inside the Admin Dashboard.
+- **Mobile Chat (Strictly 2 Options):**
+  1. **Community Chat (`Campus Safety Circle`):** A campus-wide real-time group chat for all users, with server-stamped sender aliases/role badges, user-level sender blocking (`chat_blocked_users`), and message flagging (`chat_message_reports`).
+  2. **Department Admin Chat (`user_admin`):** Students select one of the 4 fixed departments (**Facilities**, **Cleaner**, **Parking**, or **Security** — strictly excluding Super Admin) via `get_or_create_department_chat` to open a direct support thread visible to all admins in that department and overseen by the Super Admin.
+- **Web Portal Staff Chat & Tiered Moderation:** Includes private **Admin ↔ Super Admin** (`admin_super_admin`) channels on the web portal. Both Department Admins and the Super Admin can moderate and delete messages/flags in the **Community** chat, while **only the Super Admin** has moderation privilege (`DELETE` messages & review flags) on student–admin (`user_admin`) threads.
 
-### E. Centralized Database, Wrapper Services & Security (Shared Backend)
+### E. Security, Account Provisioning & Password Recovery
 
-- **Standardized Wrapper Functions:** All database reads, writes, and updates are encapsulated inside `Database/` on both platforms with fixed input parameters and return formats—UI modules never execute raw database queries directly.
-- **Pre-Seeded Dummy Data:** Includes realistic dummy accounts (users, regular admins, Super Admin), preset pins, and sample reports so every module can be tested immediately.
-- **Role-Based Access Control (RBAC):** Enforces database-level permissions separating `user`, `admin`, and `super_admin` privileges.
+- **Strict Database Isolation (`Database/` Wrappers):** All Supabase queries, Realtime subscriptions, and typed error handling (`DatabaseException`) are encapsulated inside `Android/lib/Database/` (Dart) and `Website/src/Database/` (TypeScript).
+- **Privileged Account Management (`admin-accounts` Edge Function):** Mobile sign-ups are locked to `role = 'user'`; creating department admin accounts, hard-deleting accounts (`auth.admin.deleteUser` with `ON DELETE SET NULL` preserving campus history), listing all accounts, and triggering administrative password resets run server-side via a JWT-verified Edge Function, paired with self-service email password recovery on both mobile and web login screens.
 
 ---
 
@@ -120,9 +137,9 @@ Mobile-App-Development-Assignment/
 
 ### Collaboration Rules
 
-- **Stay in Your Assigned Folder & Branch:** Work on your feature branch (e.g., `dev-user-dashboard`, `dev-admin-web`, `dev-map`, `dev-reporting`, `dev-database`) and only create/edit files inside your designated folder(s).
-- **Use Only Wrapper Functions for Data:** Call the functions provided in `Database/` for all data operations.
-- **Never Commit Secrets:** Place database keys in local `.env` files (ignored by Git).
+- **Stay in Your Assigned Folder & Branch:** Work on your feature branch (`UserDashboard`, `AdminDashboard`, `Map`, `Report`, `Database`) and only create/edit files inside your designated folder(s).
+- **Use Only Wrapper Functions for Data:** Import from `Android/lib/Database/database.dart` (mobile) or `Website/src/Database` (web) — never run raw Supabase queries in UI files.
+- **Never Commit Secrets:** Copy `.env.example` → `.env` locally (ignored by Git). Only use the public **anon** key in `Android/.env` and `Website/.env`; keep `SUPABASE_SERVICE_ROLE_KEY` strictly in `supabase/.env` for local seeding.
 - **Merge via Pull Request:** Open a PR into `main` when ready; `.github/CODEOWNERS` enforces review by `@Casterk017` or `@HamsterSaMe`.
 
 ### Quick Start
@@ -130,11 +147,19 @@ Mobile-App-Development-Assignment/
 #### 1. Clone the repository
 
 ```bash
-git clone [https://github.com/Casterk017/Mobile-App-Development-Assignment.git](https://github.com/Casterk017/Mobile-App-Development-Assignment.git)
-cd Mobile-App-Development-Assignment
+git clone https://github.com/Casterk017/Mobile-App-Development-Assignment-Group-12.git
+cd Mobile-App-Development-Assignment-Group-12
 ```
 
-#### 2. Run the Flutter Mobile App
+#### 2. Configure Environment Variables
+
+- **Mobile:** Copy `Android/.env.example` → `Android/.env` (`SUPABASE_URL`, `SUPABASE_ANON_KEY`)
+- **Web:** Copy `Website/.env.example` → `Website/.env` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`)
+- **Backend Seed (Database Owner only):** Copy `supabase/.env.example` → `supabase/.env` (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`)
+
+*(Use the base project URL `https://<project-ref>.supabase.co` without `/rest/v1/`.)*
+
+#### 3. Run the Flutter Mobile App
 
 ```bash
 cd Android
@@ -142,10 +167,27 @@ flutter pub get
 flutter run
 ```
 
-#### 3. Run the Admin Website (in a separate terminal)
+#### 4. Run the Admin Website (in a separate terminal)
 
 ```bash
 cd Website
 npm install
-npm run dev
+npm run typecheck
 ```
+
+#### 5. Pre-Seeded Test Accounts (Default Password: `CampusSafe123!`)
+
+- **Super Admin:** `superadmin@uts.edu.my`
+- **Department Admins:** `facilities.admin@uts.edu.my`, `cleaner.admin@uts.edu.my`, `parking.admin@uts.edu.my`, `security.admin@uts.edu.my`
+- **Students:** `fern@student.uts.edu.my`, `river@student.uts.edu.my`, `cedar@student.uts.edu.my`, `oak@student.uts.edu.my`, `iris@student.uts.edu.my`, `pine@student.uts.edu.my`
+
+For Supabase CLI migration push, Edge Function deployment, and seeding commands, see [`supabase/README.md`](supabase/README.md).
+
+
+#### 5. Pre-Seeded Test Accounts (Default Password: `CampusSafe123!`)
+
+- **Super Admin:** `superadmin@uts.edu.my`
+- **Department Admins:** `facilities.admin@uts.edu.my`, `cleaner.admin@uts.edu.my`, `parking.admin@uts.edu.my`, `security.admin@uts.edu.my`
+- **Students:** `fern@student.uts.edu.my`, `river@student.uts.edu.my`, `cedar@student.uts.edu.my`, `oak@student.uts.edu.my`, `iris@student.uts.edu.my`, `pine@student.uts.edu.my`
+
+For Supabase CLI migration push, Edge Function deployment, and seeding commands, see [`supabase/README.md`](supabase/README.md).
